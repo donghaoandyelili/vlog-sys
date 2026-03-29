@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLog 博客社区</title>
+<style>
+/* ========== Discuz 经典风格 ========== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+  background: #e1e1e1;
+  min-height: 100vh;
+}
+
+a { color: #3b73af; text-decoration: none; }
+a:hover { color: #326b9e; text-decoration: underline; }
+
+/* ===== 顶部导航栏 ===== */
+#topbar {
+  background: #2b3e50;
+  color: #ccc;
+  font-size: 12px;
+  height: 30px;
+  line-height: 30px;
+}
+#topbar .wrapper {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 10px;
+  display: flex;
+  justify-content: space-between;
+}
+#topbar a { color: #ccc; margin-left: 10px; }
+#topbar a:hover { color: #fff; text-decoration: none; }
+
+/* ===== Header ===== */
+#header {
+  background: linear-gradient(to bottom, #4c8fbf 0%, #3974a5 100%);
+  border-bottom: 3px solid #2a6496;
+  padding: 0;
+}
+#header .wrapper {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#header h1 {
+  color: #fff;
+  font-size: 26px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,.3);
+  cursor: pointer;
+}
+#header h1 span { color: #ffd700; }
+
+/* ===== 导航菜单 ===== */
+#navbar {
+  background: #327ab7;
+  border-bottom: 1px solid #2a6496;
+}
+#navbar .wrapper {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 10px;
+  display: flex;
+  gap: 0;
+}
+#navbar a {
+  display: inline-block;
+  color: #fff;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background .2s;
+}
+#navbar a:hover, #navbar a.active {
+  background: #2a6496;
+  text-decoration: none;
+}
+
+/* ===== 主体 ===== */
+.wrapper-main {
+  max-width: 980px;
+  margin: 10px auto;
+  padding: 0 10px;
+}
+
+/* ===== 面板通用 ===== */
+.panel {
+  background: #fff;
+  border: 1px solid #c0c0c0;
+  margin-bottom: 10px;
+  border-radius: 0;
+}
+.panel-head {
+  background: linear-gradient(to bottom, #f6f6f6 0%, #ededed 100%);
+  border-bottom: 2px solid #6caddf;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.panel-head .icon { color: #327ab7; margin-right: 6px; }
+.panel-body { padding: 0; }
+
+/* ===== 帖子列表表格 ===== */
+.post-table { width: 100%; border-collapse: collapse; }
+.post-table th {
+  background: linear-gradient(to bottom, #f6f6f6, #eaeaea);
+  border-bottom: 1px solid #d0d0d0;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 13px;
+  color: #666;
+  font-weight: normal;
+}
+.post-table th:first-child { width: 55%; }
+.post-table td {
+  padding: 10px;
+  border-bottom: 1px solid #e8e8e8;
+  font-size: 13px;
+  color: #555;
+  vertical-align: middle;
+}
+.post-table tr:hover td { background: #f5faff; }
+.post-table .title-cell a {
+  font-size: 14px;
+  color: #3b73af;
+  font-weight: normal;
+}
+.post-table .title-cell a:hover { color: #c00; }
+.post-table .author-cell { color: #3b73af; }
+.post-table .time-cell { color: #999; font-size: 12px; }
+.post-table .views-cell { color: #999; }
+
+/* ===== 分页 ===== */
+.pagination {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f6f6f6;
+  border-top: 1px solid #e0e0e0;
+}
+.pagination a, .pagination span {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  cursor: pointer;
+}
+.pagination a:hover { background: #e8f0fe; text-decoration: none; }
+.pagination .current {
+  background: #327ab7;
+  color: #fff;
+  border-color: #327ab7;
+  font-weight: bold;
+}
+.pagination .disabled {
+  color: #ccc;
+  cursor: default;
+  background: #fafafa;
+}
+.pagination .info { border: none; background: none; color: #999; font-size: 12px; }
+
+/* ===== 按钮 ===== */
+.btn {
+  display: inline-block;
+  padding: 6px 16px;
+  font-size: 13px;
+  border: 1px solid #b0b0b0;
+  background: linear-gradient(to bottom, #fff 0%, #e8e8e8 100%);
+  color: #333;
+  cursor: pointer;
+  transition: all .15s;
+  border-radius: 2px;
+}
+.btn:hover { background: linear-gradient(to bottom, #f0f0f0, #ddd); text-decoration: none; }
+.btn-primary {
+  background: linear-gradient(to bottom, #4da2df 0%, #3585c0 100%);
+  border-color: #2a6496;
+  color: #fff;
+}
+.btn-primary:hover { background: linear-gradient(to bottom, #3d95d4, #2d78b2); color: #fff; }
+.btn-danger {
+  background: linear-gradient(to bottom, #e06050, #c0392b);
+  border-color: #a93226;
+  color: #fff;
+}
+.btn-danger:hover { background: linear-gradient(to bottom, #d45040, #b0301f); color: #fff; }
+.btn-sm { padding: 3px 10px; font-size: 12px; }
+
+/* ===== 表单 ===== */
+.form-group { margin-bottom: 12px; padding: 0 12px; }
+.form-group label {
+  display: block;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+.form-group input[type="text"],
+.form-group textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #c0c0c0;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color .2s;
+}
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+  border-color: #66afe9;
+  box-shadow: 0 0 4px rgba(102,175,233,.4);
+}
+.form-group textarea { min-height: 300px; resize: vertical; line-height: 1.7; }
+.form-actions {
+  padding: 10px 12px;
+  background: #f6f6f6;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+}
+.form-actions .btn { margin: 0 5px; }
+
+/* ===== 文章详情 ===== */
+.post-detail-head {
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+.post-detail-head h2 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 8px;
+}
+.post-meta {
+  font-size: 12px;
+  color: #999;
+}
+.post-meta span { margin-right: 15px; }
+.post-meta .label { color: #666; }
+.post-detail-body {
+  padding: 20px 15px;
+  line-height: 1.8;
+  font-size: 14px;
+  color: #444;
+  min-height: 200px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+.post-detail-body p { margin-bottom: 10px; }
+.post-detail-actions {
+  padding: 10px 15px;
+  background: #f6f6f6;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== 搜索栏 ===== */
+.search-bar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.search-bar input {
+  padding: 4px 8px;
+  border: 1px solid #c0c0c0;
+  font-size: 13px;
+  width: 180px;
+  outline: none;
+}
+.search-bar input:focus { border-color: #66afe9; }
+
+/* ===== 面包屑 ===== */
+.breadcrumb {
+  padding: 8px 0;
+  font-size: 12px;
+  color: #999;
+}
+.breadcrumb a { color: #3b73af; }
+
+/* ===== 提示消息 ===== */
+.msg-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.msg-box {
+  background: #fff;
+  border: 1px solid #c0c0c0;
+  min-width: 360px;
+  max-width: 450px;
+  box-shadow: 2px 4px 20px rgba(0,0,0,.3);
+}
+.msg-box-head {
+  background: linear-gradient(to bottom, #f6f6f6, #ededed);
+  border-bottom: 2px solid #6caddf;
+  padding: 8px 12px;
+  font-weight: bold;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.msg-box-head .close-btn {
+  cursor: pointer;
+  font-size: 16px;
+  color: #999;
+  background: none;
+  border: none;
+}
+.msg-box-body {
+  padding: 25px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+.msg-box-foot {
+  padding: 10px;
+  background: #f6f6f6;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+}
+.msg-box-foot .btn { margin: 0 5px; }
+
+/* ===== 空状态 ===== */
+.empty-tip {
+  padding: 40px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+/* ===== Footer ===== */
+#footer {
+  max-width: 980px;
+  margin: 20px auto;
+  padding: 15px 10px;
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+  border-top: 1px solid #ccc;
+}
+</style>
+</head>
+<body>
+
+<!-- 顶部栏 -->
+<div id="topbar">
+  <div class="wrapper">
+    <span>VLog 博客社区</span>
+    <span>
+      <a href="#" onclick="goHome()">首页</a>
+      <a href="#" onclick="showEditor()">发帖</a>
+    </span>
+  </div>
+</div>
+
+<!-- Header -->
+<div id="header">
+  <div class="wrapper">
+    <h1 onclick="goHome()">V<span>Log</span> 博客社区</h1>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="搜索帖子..." onkeydown="if(event.key==='Enter')doSearch()">
+      <button class="btn btn-sm" onclick="doSearch()" style="color:#333">搜索</button>
+    </div>
+  </div>
+</div>
+
+<!-- 导航 -->
+<div id="navbar">
+  <div class="wrapper">
+    <a href="#" class="active" onclick="goHome()" id="navHome">论坛首页</a>
+    <a href="#" onclick="showEditor()" id="navPost">发表新帖</a>
+  </div>
+</div>
+
+<!-- 主内容区 -->
+<div class="wrapper-main" id="app"></div>
+
+<!-- Footer -->
+<div id="footer">
+  Powered by <strong>VLog</strong> &copy; 2026 博客社区系统
+</div>
+
+<!-- 消息弹窗 -->
+<div id="msgDialog" class="msg-overlay" style="display:none"></div>
+
+<script>
+// ============ 状态 ============
+let currentPage = 1;
+let currentKeyword = '';
+let currentView = 'list'; // list | detail | editor
+
+// ============ 工具方法 ============
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function formatTime(iso) {
+  if (!iso) return '-';
+  const d = new Date(iso);
+  const Y = d.getFullYear();
+  const M = String(d.getMonth() + 1).padStart(2, '0');
+  const D = String(d.getDate()).padStart(2, '0');
+  const h = String(d.getHours()).padStart(2, '0');
+  const m = String(d.getMinutes()).padStart(2, '0');
+  return `${Y}-${M}-${D} ${h}:${m}`;
+}
+
+async function api(url, opts = {}) {
+  const res = await fetch(url, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts
+  });
+  return res.json();
+}
+
+function setActiveNav(id) {
+  document.querySelectorAll('#navbar a').forEach(a => a.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+// ============ 消息弹窗 ============
+function showMsg(title, content, onOk) {
+  const dialog = document.getElementById('msgDialog');
+  dialog.style.display = 'flex';
+  dialog.innerHTML = `
+    <div class="msg-box">
+      <div class="msg-box-head">
+        <span>${escapeHtml(title)}</span>
+        <button class="close-btn" onclick="closeMsg()">&times;</button>
+      </div>
+      <div class="msg-box-body">${escapeHtml(content)}</div>
+      <div class="msg-box-foot">
+        <button class="btn btn-primary btn-sm" onclick="closeMsg(); ${onOk ? onOk : ''}">确定</button>
+      </div>
+    </div>
+  `;
+}
+
+function showConfirm(title, content, onConfirm) {
+  const dialog = document.getElementById('msgDialog');
+  dialog.style.display = 'flex';
+  const confirmId = 'cfm_' + Date.now();
+  window[confirmId] = function() {
+    closeMsg();
+    onConfirm();
+    delete window[confirmId];
+  };
+  dialog.innerHTML = `
+    <div class="msg-box">
+      <div class="msg-box-head">
+        <span>${escapeHtml(title)}</span>
+        <button class="close-btn" onclick="closeMsg()">&times;</button>
+      </div>
+      <div class="msg-box-body">${escapeHtml(content)}</div>
+      <div class="msg-box-foot">
+        <button class="btn btn-primary btn-sm" onclick="${confirmId}()">确定</button>
+        <button class="btn btn-sm" onclick="closeMsg()">取消</button>
+      </div>
+    </div>
+  `;
+}
+
+function closeMsg() {
+  document.getElementById('msgDialog').style.display = 'none';
+}
+
+// ============ 帖子列表 ============
+async function loadList(page, keyword) {
+  currentPage = page || 1;
+  currentKeyword = keyword || '';
+  currentView = 'list';
+  setActiveNav('navHome');
+
+  const params = new URLSearchParams({ page: currentPage, pageSize: 15 });
+  if (currentKeyword) params.set('keyword', currentKeyword);
+
+  const res = await api('/api/posts?' + params);
+  if (res.code !== 0) return showMsg('错误', res.msg || '加载失败');
+
+  const { list, total, page: pg, totalPages } = res.data;
+  const app = document.getElementById('app');
+
+  let breadcrumb = `<div class="breadcrumb"><a href="#" onclick="goHome()">首页</a> &rsaquo; 博客文章列表</div>`;
+
+  let tableRows = '';
+  if (list.length === 0) {
+    tableRows = `<tr><td colspan="4" class="empty-tip">暂无帖子，快来 <a href="#" onclick="showEditor()">发表第一篇</a> 吧！</td></tr>`;
+  } else {
+    list.forEach(p => {
+      tableRows += `
+        <tr>
+          <td class="title-cell">
+            <a href="#" onclick="viewPost('${p.id}')">${escapeHtml(p.title)}</a>
+          </td>
+          <td class="author-cell">${escapeHtml(p.author)}</td>
+          <td class="views-cell">${p.views || 0}</td>
+          <td class="time-cell">${formatTime(p.updatedAt)}</td>
+        </tr>
+      `;
+    });
+  }
+
+  // 分页
+  let pagHtml = '';
+  if (totalPages > 1) {
+    pagHtml += `<span class="info">共 ${total} 篇 / ${totalPages} 页</span>`;
+    if (pg > 1) pagHtml += `<a onclick="loadList(${pg - 1},'${escapeHtml(currentKeyword)}')">&laquo; 上一页</a>`;
+    else pagHtml += `<span class="disabled">&laquo; 上一页</span>`;
+
+    const startP = Math.max(1, pg - 3);
+    const endP = Math.min(totalPages, pg + 3);
+    for (let i = startP; i <= endP; i++) {
+      if (i === pg) pagHtml += `<span class="current">${i}</span>`;
+      else pagHtml += `<a onclick="loadList(${i},'${escapeHtml(currentKeyword)}')">${i}</a>`;
+    }
+
+    if (pg < totalPages) pagHtml += `<a onclick="loadList(${pg + 1},'${escapeHtml(currentKeyword)}')">下一页 &raquo;</a>`;
+    else pagHtml += `<span class="disabled">下一页 &raquo;</span>`;
+  }
+
+  app.innerHTML = `
+    ${breadcrumb}
+    <div class="panel">
+      <div class="panel-head">
+        <span><span class="icon">&#9632;</span> 最新帖子${currentKeyword ? ' - 搜索: ' + escapeHtml(currentKeyword) : ''}</span>
+        <button class="btn btn-primary btn-sm" onclick="showEditor()">发表新帖</button>
+      </div>
+      <div class="panel-body">
+        <table class="post-table">
+          <thead>
+            <tr>
+              <th>帖子标题</th>
+              <th style="width:100px">作者</th>
+              <th style="width:60px">浏览</th>
+              <th style="width:130px">最后更新</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows}
+          </tbody>
+        </table>
+        ${totalPages > 1 ? `<div class="pagination">${pagHtml}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ============ 文章详情 ============
+async function viewPost(id) {
+  currentView = 'detail';
+  setActiveNav('');
+
+  const res = await api('/api/posts/' + encodeURIComponent(id));
+  if (res.code !== 0) return showMsg('错误', res.msg || '文章不存在');
+
+  const p = res.data;
+  const app = document.getElementById('app');
+
+  // 简单将换行转为<br>，保留用户输入的HTML结构
+  const contentHtml = p.content
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>');
+
+  app.innerHTML = `
+    <div class="breadcrumb">
+      <a href="#" onclick="goHome()">首页</a> &rsaquo;
+      <a href="#" onclick="goHome()">博客文章</a> &rsaquo;
+      查看帖子
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span><span class="icon">&#9632;</span> 查看帖子</span>
+        <button class="btn btn-sm" onclick="goHome()">返回列表</button>
+      </div>
+      <div class="panel-body">
+        <div class="post-detail-head">
+          <h2>${escapeHtml(p.title)}</h2>
+          <div class="post-meta">
+            <span><span class="label">作者:</span> ${escapeHtml(p.author)}</span>
+            <span><span class="label">发表于:</span> ${formatTime(p.createdAt)}</span>
+            <span><span class="label">最后编辑:</span> ${formatTime(p.updatedAt)}</span>
+            <span><span class="label">浏览:</span> ${p.views}</span>
+          </div>
+        </div>
+        <div class="post-detail-body">${contentHtml}</div>
+        <div class="post-detail-actions">
+          <button class="btn btn-primary btn-sm" onclick="showEditor('${p.id}')">编辑</button>
+          <button class="btn btn-danger btn-sm" onclick="deletePost('${p.id}')">删除</button>
+          <button class="btn btn-sm" onclick="goHome()">返回列表</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============ 编辑器（发布 / 修改） ============
+async function showEditor(editId) {
+  currentView = 'editor';
+  setActiveNav('navPost');
+
+  let title = '', content = '', author = '';
+  let isEdit = false;
+
+  if (editId) {
+    isEdit = true;
+    const res = await api('/api/posts/' + encodeURIComponent(editId));
+    if (res.code !== 0) return showMsg('错误', res.msg || '文章不存在');
+    title = res.data.title;
+    content = res.data.content;
+    author = res.data.author;
+  }
+
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="breadcrumb">
+      <a href="#" onclick="goHome()">首页</a> &rsaquo;
+      ${isEdit ? '编辑帖子' : '发表新帖'}
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span><span class="icon">&#9632;</span> ${isEdit ? '编辑帖子' : '发表新帖'}</span>
+        <button class="btn btn-sm" onclick="goHome()">返回列表</button>
+      </div>
+      <div class="panel-body" style="padding:15px 0;">
+        <div class="form-group">
+          <label>帖子标题</label>
+          <input type="text" id="edTitle" placeholder="请输入帖子标题（必填）" maxlength="200" value="${escapeHtml(title)}">
+        </div>
+        <div class="form-group">
+          <label>作者昵称</label>
+          <input type="text" id="edAuthor" placeholder="请输入作者昵称（选填，默认匿名）" maxlength="50" value="${escapeHtml(author)}">
+        </div>
+        <div class="form-group">
+          <label>帖子内容</label>
+          <textarea id="edContent" placeholder="请输入帖子内容...">${escapeHtml(content)}</textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="submitPost('${editId || ''}')">${isEdit ? '保存修改' : '发表帖子'}</button>
+        <button class="btn" onclick="goHome()">取消</button>
+      </div>
+    </div>
+  `;
+}
+
+async function submitPost(editId) {
+  const title = document.getElementById('edTitle').value.trim();
+  const author = document.getElementById('edAuthor').value.trim();
+  const content = document.getElementById('edContent').value.trim();
+
+  if (!title) return showMsg('提示', '请输入帖子标题');
+  if (!content) return showMsg('提示', '请输入帖子内容');
+
+  const body = JSON.stringify({ title, author, content });
+
+  let res;
+  if (editId) {
+    res = await api('/api/posts/' + encodeURIComponent(editId), { method: 'PUT', body });
+  } else {
+    res = await api('/api/posts', { method: 'POST', body });
+  }
+
+  if (res.code !== 0) return showMsg('错误', res.msg || '操作失败');
+
+  showMsg('成功', res.msg || '操作成功');
+  if (res.data && res.data.id) {
+    setTimeout(() => viewPost(res.data.id), 600);
+  } else {
+    setTimeout(() => goHome(), 600);
+  }
+}
+
+// ============ 删除文章 ============
+function deletePost(id) {
+  showConfirm('确认删除', '确定要删除这篇帖子吗？删除后将无法恢复。', async () => {
+    const res = await api('/api/posts/' + encodeURIComponent(id), { method: 'DELETE' });
+    if (res.code !== 0) return showMsg('错误', res.msg || '删除失败');
+    showMsg('成功', '帖子已成功删除');
+    setTimeout(() => goHome(), 600);
+  });
+}
+
+// ============ 导航 ============
+function goHome() {
+  document.getElementById('searchInput').value = '';
+  currentKeyword = '';
+  loadList(1);
+  return false;
+}
+
+function doSearch() {
+  const keyword = document.getElementById('searchInput').value.trim();
+  loadList(1, keyword);
+}
+
+// ============ 初始化 ============
+window.addEventListener('DOMContentLoaded', () => {
+  loadList(1);
+});
+</script>
+
+</body>
+</html>
